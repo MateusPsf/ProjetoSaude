@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "Quiz da Saúde",
+    "slug": "quiz-saude-jogo-da-velha",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.quizsaude.jogodavelha"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#ecfdf5"
+      },
+      "package": "com.quizsaude.jogodavelha"
+    },
+    "web": {},
+    "plugins": [
+      "expo-asset",
+      "expo-font"
+    ]
+  }
+}
