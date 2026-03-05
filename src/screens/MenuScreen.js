@@ -218,7 +218,7 @@ export default function MenuScreen({ navigation }) {
       </View>
 
       {/* Rodapé */}
-      <Text style={styles.footer}>📖 Projeto Acadêmico 2024</Text>
+      <Text style={styles.footer}>📖 Projeto Acadêmico 2026</Text>
       <Text style={styles.footerSub}>Desenvolvido com ❤️ para educação em saúde</Text>
 
       {/* Modal de Regras */}
