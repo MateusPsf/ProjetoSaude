@@ -13,6 +13,7 @@ import theme from '../theme';
 
 export default function MenuScreen({ navigation }) {
   const [gameMode, setGameMode] = useState('ai'); // 'ai' ou 'pvp'
+  const [difficulty, setDifficulty] = useState('medium'); // 'easy', 'medium', 'hard'
   const [player1Name, setPlayer1Name] = useState('Jogador 1');
   const [player2Name, setPlayer2Name] = useState('Jogador 2');
   const [showRules, setShowRules] = useState(false);
@@ -21,6 +22,7 @@ export default function MenuScreen({ navigation }) {
     const p2 = gameMode === 'ai' ? 'IA' : player2Name || 'Jogador 2';
     navigation.navigate('Game', {
       gameMode,
+      difficulty,
       player1Name: player1Name || 'Jogador 1',
       player2Name: p2,
     });
@@ -91,6 +93,69 @@ export default function MenuScreen({ navigation }) {
             </Text>
           </TouchableOpacity>
         </View>
+
+        {/* Dificuldade (só aparece no modo IA) */}
+        {gameMode === 'ai' && (
+          <>
+            <Text style={styles.label}>Dificuldade da IA</Text>
+            <View style={styles.modeRow}>
+              <TouchableOpacity
+                style={[
+                  styles.modeBtn,
+                  difficulty === 'easy' ? styles.diffEasyActive : styles.modeBtnInactive,
+                ]}
+                onPress={() => setDifficulty('easy')}
+              >
+                <Text
+                  style={[
+                    styles.modeBtnText,
+                    difficulty === 'easy'
+                      ? styles.modeBtnTextActive
+                      : styles.modeBtnTextInactive,
+                  ]}
+                >
+                  Fácil
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.modeBtn,
+                  difficulty === 'medium' ? styles.diffMediumActive : styles.modeBtnInactive,
+                ]}
+                onPress={() => setDifficulty('medium')}
+              >
+                <Text
+                  style={[
+                    styles.modeBtnText,
+                    difficulty === 'medium'
+                      ? styles.modeBtnTextActive
+                      : styles.modeBtnTextInactive,
+                  ]}
+                >
+                  Médio
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.modeBtn,
+                  difficulty === 'hard' ? styles.diffHardActive : styles.modeBtnInactive,
+                ]}
+                onPress={() => setDifficulty('hard')}
+              >
+                <Text
+                  style={[
+                    styles.modeBtnText,
+                    difficulty === 'hard'
+                      ? styles.modeBtnTextActive
+                      : styles.modeBtnTextInactive,
+                  ]}
+                >
+                  Difícil
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
 
         {/* Nome jogador 1 */}
         <Text style={styles.label}>Jogador 1 (X)</Text>
@@ -315,6 +380,18 @@ const styles = StyleSheet.create({
   },
   modeBtnTextInactive: {
     color: theme.colors.gray600,
+  },
+  diffEasyActive: {
+    backgroundColor: '#d1fae5',
+    borderColor: '#34d399',
+  },
+  diffMediumActive: {
+    backgroundColor: '#fef9c3',
+    borderColor: '#facc15',
+  },
+  diffHardActive: {
+    backgroundColor: '#fde2e2',
+    borderColor: '#f87171',
   },
 
   // Input

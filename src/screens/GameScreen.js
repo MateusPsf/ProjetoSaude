@@ -17,7 +17,10 @@ import {
 } from '../utils/gameLogic';
 
 export default function GameScreen({ route, navigation }) {
-  const { gameMode, player1Name, player2Name } = route.params;
+  const { gameMode, difficulty, player1Name, player2Name } = route.params;
+
+  // Taxa de acerto da IA por dificuldade
+  const aiAccuracy = { easy: 0.25, medium: 0.5, hard: 0.8 }[difficulty] || 0.5;
 
   // Estado do jogo
   const [board, setBoard] = useState(createEmptyBoard());
@@ -135,8 +138,8 @@ export default function GameScreen({ route, navigation }) {
     if (gameOver) return;
     setAiThinking(true);
 
-    // IA "responde" - 50% de chance de acertar
-    const aiCorrect = Math.random() < 0.5;
+    // IA "responde" - chance de acertar baseada na dificuldade
+    const aiCorrect = Math.random() < aiAccuracy;
 
     if (aiCorrect) {
       const move = getAIMove(currentBoard);
