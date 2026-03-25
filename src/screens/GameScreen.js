@@ -6,7 +6,6 @@ import {
   ScrollView,
   StyleSheet,
   Alert,
-  Dimensions,
   useWindowDimensions,
 } from 'react-native';
 import theme from '../theme';
@@ -22,15 +21,26 @@ export default function GameScreen({ route, navigation }) {
   const { gameMode, difficulty, player1Name, player2Name } = route.params;
   const { width } = useWindowDimensions();
 
-  // Calcula tamanho responsivo das células baseado na largura da tela
-  const getCellSize = () => {
-    // Máximo 500px de largura para o card
+  // Calcula tamanho responsivo do tabuleiro considerando paddings reais
+  const getBoardMetrics = () => {
     const cardMaxWidth = 500;
-    const availableWidth = Math.min(width - 40, cardMaxWidth); // -40 para padding do container
-    const gapTotal = 8 * 2; // 2 gaps entre 3 células
-    const cellSize = (availableWidth - gapTotal) / 3;
-    return Math.max(Math.min(cellSize, 120), 60); // 60px mínimo, 120px máximo
+    const containerPadding = theme.spacing.md * 2;
+    const cardPadding = theme.spacing.lg * 2;
+    const maxBoardWidth = cardMaxWidth - cardPadding;
+    const availableWidth = Math.min(
+      width - containerPadding - cardPadding,
+      maxBoardWidth,
+    );
+    const safeWidth = Math.max(availableWidth, 240);
+    const cellGap = 8;
+    const cellSize = (safeWidth - cellGap * 3) / 3;
+    const clampedSize = Math.max(Math.min(cellSize, 110), 60);
+    const boardWidth = clampedSize * 3 + cellGap * 3;
+
+    return { cellSize: clampedSize, boardWidth, cellGap };
   };
+
+  const { cellSize, boardWidth, cellGap } = getBoardMetrics();
 
   // Taxa de acerto da IA por dificuldade
   const aiAccuracy = { easy: 0.25, medium: 0.5, hard: 0.8 }[difficulty] || 0.5;
@@ -289,15 +299,16 @@ export default function GameScreen({ route, navigation }) {
       <View style={styles.card}>
         <Text style={styles.boardTitle}>Tabuleiro</Text>
 
-        <View style={styles.board}>
+        <View style={[styles.board, { width: boardWidth }]}>
           {board.map((cell, idx) => (
             <TouchableOpacity
               key={idx}
               style={[
                 styles.cell,
                 {
-                  width: getCellSize(),
-                  height: getCellSize(),
+                  width: cellSize,
+                  height: cellSize,
+                  margin: cellGap / 2,
                 },
                 cell === 'X' && styles.cellX,
                 cell === 'O' && styles.cellO,
@@ -311,7 +322,7 @@ export default function GameScreen({ route, navigation }) {
                 style={[
                   styles.cellText,
                   {
-                    fontSize: getCellSize() * 0.4,
+                    fontSize: cellSize * 0.4,
                   },
                   cell === 'X' && styles.cellTextX,
                   cell === 'O' && styles.cellTextO,
@@ -482,7 +493,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    gap: 8,
+    alignSelf: 'center',
     marginBottom: theme.spacing.md,
   },
   cell: {
