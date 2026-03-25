@@ -6,6 +6,8 @@ import {
   ScrollView,
   StyleSheet,
   Alert,
+  Dimensions,
+  useWindowDimensions,
 } from 'react-native';
 import theme from '../theme';
 import healthQuestions from '../data/questions';
@@ -18,6 +20,17 @@ import {
 
 export default function GameScreen({ route, navigation }) {
   const { gameMode, difficulty, player1Name, player2Name } = route.params;
+  const { width } = useWindowDimensions();
+
+  // Calcula tamanho responsivo das células baseado na largura da tela
+  const getCellSize = () => {
+    // Máximo 500px de largura para o card
+    const cardMaxWidth = 500;
+    const availableWidth = Math.min(width - 40, cardMaxWidth); // -40 para padding do container
+    const gapTotal = 8 * 2; // 2 gaps entre 3 células
+    const cellSize = (availableWidth - gapTotal) / 3;
+    return Math.max(Math.min(cellSize, 120), 60); // 60px mínimo, 120px máximo
+  };
 
   // Taxa de acerto da IA por dificuldade
   const aiAccuracy = { easy: 0.25, medium: 0.5, hard: 0.8 }[difficulty] || 0.5;
@@ -282,6 +295,10 @@ export default function GameScreen({ route, navigation }) {
               key={idx}
               style={[
                 styles.cell,
+                {
+                  width: getCellSize(),
+                  height: getCellSize(),
+                },
                 cell === 'X' && styles.cellX,
                 cell === 'O' && styles.cellO,
               ]}
@@ -293,6 +310,9 @@ export default function GameScreen({ route, navigation }) {
               <Text
                 style={[
                   styles.cellText,
+                  {
+                    fontSize: getCellSize() * 0.4,
+                  },
                   cell === 'X' && styles.cellTextX,
                   cell === 'O' && styles.cellTextO,
                 ]}
@@ -327,8 +347,6 @@ export default function GameScreen({ route, navigation }) {
     </ScrollView>
   );
 }
-
-const CELL_SIZE = 80;
 
 const styles = StyleSheet.create({
   container: {
@@ -468,8 +486,6 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.md,
   },
   cell: {
-    width: CELL_SIZE,
-    height: CELL_SIZE,
     backgroundColor: theme.colors.white,
     borderRadius: theme.borderRadius.md,
     alignItems: 'center',
@@ -483,7 +499,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fce7f3', // rosa claro
   },
   cellText: {
-    fontSize: 32,
     fontWeight: '800',
   },
   cellTextX: {
